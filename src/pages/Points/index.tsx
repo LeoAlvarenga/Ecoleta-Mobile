@@ -6,6 +6,7 @@ import { StyleSheet, Text, View, TouchableOpacity, Image, Alert } from 'react-na
 import MapView, { Marker } from 'react-native-maps'
 import { SvgUri } from 'react-native-svg';
 import { ScrollView } from 'react-native-gesture-handler';
+import Popover from 'react-native-popover-view'
 import * as Location from 'expo-location';
 import api from '../../services/api'
 
@@ -18,7 +19,7 @@ interface Item {
 interface Point {
     id: number;
     name: string;
-    image: string;
+    image_url: string;
     latitude: number;
     longitude: number;
 }
@@ -34,10 +35,15 @@ const Points = () => {
     const [items, setItems] = useState<Item[]>([]);
     const [points, setPoints] = useState<Point[]>([]);
     const [selectedItems, setSelectedItems] = useState<number[]>([]);
+    const [popOverVisibility, setPopOverVisibility] = useState(false)
+    const [listRef, setListRef] = useState<ScrollView>()
 
     const [initialPosition, setInitialPosition] = useState<[number, number]>([0, 0])
 
     const homeParams = route.params as Params
+
+
+
 
     useEffect(() => {
         (async function loadPosition() {
@@ -52,7 +58,13 @@ const Points = () => {
 
             const { latitude, longitude } = location.coords
 
+            console.log('coords', latitude, longitude)
+
             setInitialPosition([latitude, longitude])
+
+            console.log('listRef', listRef)
+
+            setPopOverVisibility(true)
         })()
     }, [])
 
@@ -71,6 +83,7 @@ const Points = () => {
             }
         }).then(response => {
             setPoints(response.data)
+            console.log('points', points)
         })
     }, [selectedItems])
 
@@ -79,7 +92,7 @@ const Points = () => {
     }
 
     function handleNavigationToDetail(id: number) {
-        navigation.navigate('Detail', {point_id: id})
+        navigation.navigate('Detail', { point_id: id })
     }
 
     function handleSelectedItem(id: number) {
@@ -93,6 +106,15 @@ const Points = () => {
             setSelectedItems([...selectedItems, id]);
         }
         console.log(selectedItems);
+    }
+
+    function handleOpenPopOver() {
+        setTimeout(handleClosePopOver, 2000)
+    }
+
+    function handleClosePopOver() {
+        console.log('clicou para fechar')
+        setPopOverVisibility(false)
     }
 
     return (
@@ -126,12 +148,12 @@ const Points = () => {
                                             style={styles.mapMarker}
                                             onPress={() => handleNavigationToDetail(point.id)}
                                             coordinate={{
-                                                latitude: point.latitude,
-                                                longitude: point.longitude,
+                                                latitude: Number(point.latitude),
+                                                longitude: Number(point.longitude),
                                             }} >
                                             <View style={styles.mapMarkerContainer} >
-                                                <Image style={styles.mapMarkerImage} source={{ uri: point.image }} />
-                                        <Text style={styles.mapMarkerTitle}>{point.name}</Text>
+                                                <Image style={styles.mapMarkerImage} source={{ uri: point.image_url }} />
+                                                <Text style={styles.mapMarkerTitle}>{point.name}</Text>
                                             </View>
                                         </Marker>
                                     ))
@@ -141,6 +163,16 @@ const Points = () => {
                     }
                 </View>
             </View>
+
+            <Popover
+                isVisible={popOverVisibility}
+                onOpenComplete={handleOpenPopOver}
+                onRequestClose={handleClosePopOver}
+                popoverStyle={styles.popOver}
+            >
+                <Text style={styles.popOverText}>Selecione os items que deseja descartar abaixo, para mostrar os pontos no mapa</Text>
+            </Popover>
+
             <View style={styles.itemsContainer}>
                 <ScrollView
                     horizontal
@@ -232,6 +264,21 @@ const styles = StyleSheet.create({
         color: '#FFF',
         fontSize: 13,
         lineHeight: 23,
+    },
+
+    popOver: {
+        backgroundColor: '#fff',
+        width: 250,
+        borderRadius: 15,
+    },
+
+    popOverText: {
+        textAlign: 'center',
+        fontFamily: 'Roboto_400Regular',
+        fontSize: 20,
+        marginVertical: 15,
+        marginHorizontal: 5,
+        padding: 5
     },
 
     itemsContainer: {
