@@ -24,11 +24,11 @@
 
 **You need to install [Node.js](https://nodejs.org/en/download/) and [Git](https://git-scm.com/) first, alson make shure you're runnig the API Server of the Ecoleta project (you can find it right [here](https://github.com/LeoAlvarenga/Ecoleta-API)) then in order to clone the project via HTTPS, run this command:**
 
-```git clone https://github.com/LeoAlvarenga/Ecoleta-API.git```
+```git clone https://github.com/LeoAlvarenga/Ecoleta-Mobile.git```
 
 SSH URLs provide access to a Git repository via SSH, a secure protocol. If you have a SSH key registered in your Github account, clone the project using this command:
 
-```git clone git@github.com:LeoAlvarenga/Ecoleta-API.git```
+```git clone git@github.com:LeoAlvarenga/Ecoleta-Mobile.git```
 
 
 **Instal Dependecies**
