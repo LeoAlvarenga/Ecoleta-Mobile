@@ -24,8 +24,8 @@ const Home = () => {
 
     const [showUfPicker, setShowUfPicker] = useState(false);
 
-    const [ufs, setUf] = useState<Uf[]>([{}]);
-    const [cities, setCities] = useState<City[]>([{}]);
+    const [ufs, setUf] = useState<Uf[]>([{id:0,sigla:''}]);
+    const [cities, setCities] = useState<City[]>([{id:0, nome:''}]);
 
     useEffect(() => {
         axios.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome')
@@ -98,7 +98,8 @@ const Home = () => {
                         style={pickerSelectStyles}
                         placeholder={{
                             label: 'Selecione uma Cidade',
-                            value: null
+                            value: null,
+                            color: '#ddd'
                         }}
                     />
 
